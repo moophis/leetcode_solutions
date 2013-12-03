@@ -12,7 +12,67 @@
  *   (-1, 0, 1)
  *   (-1, -1, 2)
  */
+ 
+// Without using hash tables
+class Solution {
+public:
+    vector<vector<int> > threeSum(vector<int> &num) {
+        vector<vector<int> > ret;
+        
+        if (num.size() < 3) {
+            return ret;
+        }
+        
+        sort(num.begin(), num.end());
+        
+        int last_a = INT_MAX; 
+        for (int i = 0; i < num.size() - 2; i++) {
+            int j = i + 1;
+            int k = num.size() - 1;
+            
+            // check duplicates
+            if (last_a == num[i]) {
+                continue;
+            } else {
+                last_a = num[i];
+            }
+            
+            int last_b = INT_MAX, last_c = INT_MAX;
+            while (j < k) {
+                int a = num[i], b = num[j], c = num[k];
+                
+                // check duplicates
+                if (last_b == b) {
+                    j++;
+                    continue;
+                } 
+                
+                if (last_c == c) {
+                    k--;
+                    continue;
+                } 
+                
+                if (a + b + c == 0) {
+                    ret.push_back({a, b, c});
+                    j++;
+                    last_b = b;
+                    k--;
+                    last_c = c;
+                } else if (a + b + c > 0) {
+                    k--;
+                    last_c = c;
+                } else {
+                    j++;
+                    last_b = b;
+                }
+            }
+        }
+        
+        return ret;
+    }
+};
 
+// FIXME: using hash tables
 class Solution {
     /* Two sum problem */
     void two_sum(vector<vector<int> > &ret, vector<int> &num, int addition, 
