@@ -72,7 +72,49 @@ public:
     }
 };
 
-// FIXME: using hash tables
+// using hash table (new, cleaner version)
+class Solution {
+public:
+    vector<vector<int> > threeSum(vector<int> &num) {
+        vector<vector<int> > ret;
+        if (num.size() < 3) {
+            return ret;
+        }
+        
+        int last_a = INT_MAX;
+        
+        sort(num.begin(), num.end());
+        for (int i = 0; i < num.size() - 2; i++) {
+            int a = num[i];
+            int sum = -a;
+            int last_b = INT_MAX;
+            unordered_set<int> visited;
+            
+            if (a == last_a) {
+                continue;
+            } else {
+                last_a = num[i];
+            }
+            
+            for (int j = i + 1; j < num.size(); j++) {
+                int b = num[j];
+                
+                if (b == last_b) {
+                    continue;
+                }
+                if (visited.count(sum - b) > 0) {
+                    ret.push_back({a, sum - b, b});
+                    last_b = b;
+                }
+                visited.emplace(b);
+            }
+        }
+        
+        return ret;
+    }
+};
+
+// FIXME: using hash tables (legacy)
 class Solution {
     /* Two sum problem */
     void two_sum(vector<vector<int> > &ret, vector<int> &num, int addition, 
