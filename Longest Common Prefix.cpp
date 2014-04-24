@@ -1,23 +1,31 @@
-/**
- * Write a function to find the longest common prefix 
- * string amongst an array of strings.
- */
- 
+// http://oj.leetcode.com/problems/longest-common-prefix/
+
 class Solution {
 public:
     string longestCommonPrefix(vector<string> &strs) {
         if (strs.size() == 0) {
             return "";
         }
-        
-        for (int i = 0; i < strs[0].size(); i++) {
-            for (int j = 0; j < strs.size(); j++) {
-                if (strs[j][i] != strs[0][i]) {
-                    return strs[0].substr(0, i);
-                }
-            }
+        if (strs.size() == 1) {
+            return strs[0];
         }
         
-        return strs[0];
+        int strs_size = strs.size();
+        int max_len = strs[0].size();
+        string ref = strs[0];
+        string ret = "";
+        
+        for (int i = 0; i < max_len; i++) {
+            char c = ref[i];
+            
+            for (int j = 1; j < strs_size; j++) {
+                if (strs[j].size() <= i || strs[j][i] != c) {
+                    return ret;
+                }
+            }
+            ret += c;
+        }
+        
+        return ret;
     }
 };
