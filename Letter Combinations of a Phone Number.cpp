@@ -1,5 +1,44 @@
 // https://oj.leetcode.com/problems/letter-combinations-of-a-phone-number/
 
+// iterative
+class Solution {
+public:
+    vector<string> letterCombinations(string digits) {
+        vector<string> ret;
+        if (digits.size() == 0) {
+            return {""};
+        }
+        
+        vector<string> num_map = {" ","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+        vector<int> cur_idx(digits.size(), 0);  // recording the current index of each digit
+        
+        while (true) {
+            string buf;
+            for (int i = 0; i < digits.size(); i++) {
+                buf += num_map[digits[i] - '0'][cur_idx[i]];
+            }
+            ret.push_back(buf);
+            
+            int k = digits.size() - 1;
+            while (k >= 0) {
+                if (cur_idx[k] < num_map[digits[k] - '0'].size() - 1) {
+                    cur_idx[k]++;
+                    break;
+                } else {
+                    cur_idx[k] = 0;
+                    k--;
+                }
+            }
+            if (k < 0) {
+                break;
+            }
+        }
+        
+        return ret;
+    }
+};
+
+// recursive
 class Solution {
     vector<vector<char> > get_key_mapping() {
         vector<vector<char> > m;
