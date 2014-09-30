@@ -51,7 +51,47 @@ public:
     }
 };
 
-// iterative solution
+// iterative solution: updated on 2014/09/30
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode *root) {
+        vector<int> result;
+        if (root == nullptr) return result;
+        
+        stack<TreeNode *> stk;
+        TreeNode *pre = nullptr, *cur = root;
+        stk.push(root);
+        while (!stk.empty()) {
+            cur = stk.top();
+            if (pre == nullptr || pre->left == cur || pre->right == cur) {
+                if (cur->left != nullptr) {
+                    stk.push(cur->left);
+                } else if (cur->right != nullptr) {
+                    stk.push(cur->right);
+                } else {
+                    result.push_back(cur->val);
+                    stk.pop();
+                }
+            } else if (cur->left == pre) {
+                if (cur->right != nullptr) {
+                    stk.push(cur->right);
+                } else {
+                    result.push_back(cur->val);
+                    stk.pop();
+                }
+            } else {
+                result.push_back(cur->val);
+                stk.pop();
+            }
+            
+            pre = cur;
+        }
+        
+        return result;
+    }
+};
+
+// iterative solution: no optimal (It breaks the basic structure of the tree)
 class Solution {
 public:
     vector<int> postorderTraversal(TreeNode *root) {
