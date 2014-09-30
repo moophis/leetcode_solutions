@@ -1,5 +1,3 @@
-// https://oj.leetcode.com/problems/binary-tree-inorder-traversal/
-
 /**
  * Definition for binary tree
  * struct TreeNode {
@@ -10,7 +8,6 @@
  * };
  */
 class Solution {
-    // recursive solution is pretty trivial
     void recursive(vector<int> &result, TreeNode *root) {
         if (root == nullptr) {
             return;
@@ -20,9 +17,8 @@ class Solution {
         result.push_back(root->val);
         recursive(result, root->right);
     }
-
-    // iterative solution
-    void iterative(vector<int> &result, TreeNode *root) {
+        
+    void iterative_not_optimal(vector<int> &result, TreeNode *root) {
         vector<TreeNode *> stk;
         unordered_set<TreeNode *> visited;
         
@@ -46,11 +42,61 @@ class Solution {
             }
         }
     }
+    
+    void iterative(vector<int> &result, TreeNode *root) {
+        if (root == nullptr) return;
+    
+        stack<TreeNode *> stk;
+        TreeNode *cur = root;
+        while (!stk.empty() || cur) {
+            if (cur) {
+                stk.push(cur);
+                cur = cur->left;
+            } else {
+                cur = stk.top();
+                stk.pop();
+                result.push_back(cur->val);
+                cur = cur->right;
+            }
+        }
+    }
+    
+    // Non-stack, non-recursion solution
+    // Temporarily change the right child of each leaf to the next node to
+    // be visited and change it back later on.
+    void iterative_morris_traversal(vector<int> &res, TreeNode *root) {
+        if (root == nullptr) {
+            return;
+        }
+        
+        TreeNode *cur = root;
+        while (cur != nullptr) {
+            if (cur->left != nullptr) {
+                TreeNode *next = cur->left;
+                while (next->right != nullptr && next->right != cur) {
+                    next = next->right;
+                }
+                if (next->right == nullptr) {
+                    next->right = cur;
+                    cur = cur->left;
+                } else {
+                    next->right = nullptr;
+                    res.push_back(cur->val); // internal tree node
+                    cur = cur->right;
+                }
+            } else {  // leaf
+                res.push_back(cur->val);
+                cur = cur->right;
+            }
+        }
+    }
+    
 public:
     vector<int> inorderTraversal(TreeNode *root) {
         vector<int> ret;
         // recursive(ret, root);
-        iterative(ret, root);
+        // iterative(ret, root);
+        iterative_morris_traversal(ret, root);
         
         return ret;
     }
