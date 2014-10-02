@@ -1,6 +1,6 @@
 // https://oj.leetcode.com/problems/recover-binary-search-tree/
 
-// O(n) spaces
+// Better solution: keep track of two wrong nodes
 /**
  * Definition for binary tree
  * struct TreeNode {
@@ -10,6 +10,36 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+class Solution {
+    void do_recover(TreeNode *root, TreeNode* &first, TreeNode* &second, TreeNode* &last) {
+        if (root == nullptr) { 
+            return;
+        }
+        
+        do_recover(root->left, first, second, last);
+        
+        if (first == nullptr && root->val < last->val) {
+            first = last;  // be careful
+        }
+        if (first != nullptr && root->val < last->val) {
+            second = root; // be careful
+        }
+        
+        last = root;
+        do_recover(root->right, first, second, last);
+    }
+    
+public:
+    void recoverTree(TreeNode *root) {
+        TreeNode *first = nullptr, *second = nullptr;
+        TreeNode *last = new TreeNode(INT_MIN);
+        
+        do_recover(root, first, second, last);
+        swap(first->val, second->val);
+    }
+};
+
+// O(n) spaces
 class Solution {
     void inorder(TreeNode *root, vector<TreeNode*> &list, vector<int> &vals) {
         if (root == nullptr) {
