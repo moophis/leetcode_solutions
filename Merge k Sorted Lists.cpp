@@ -8,6 +8,52 @@
  *     ListNode(int x) : val(x), next(NULL) {}
  * };
  */
+
+// Use min-heap, time: O(nlogk)
+struct ListNodeComparision {
+    bool operator() (ListNode* &lhs, ListNode* &rhs) {
+        return lhs->val > rhs->val;
+    }
+};
+
+class Solution {
+public:
+    ListNode *mergeKLists(vector<ListNode *> &lists) {
+        int lists_size = lists.size();
+        if (lists_size == 0) {
+            return nullptr;
+        }
+        if (lists_size == 1) {
+            return lists[0];
+        }
+        
+        priority_queue<ListNode *, vector<ListNode *>, ListNodeComparision> node_pool;  // min-heap
+        
+        // first push the first element from all lists into the heap
+        for (int i = 0; i < lists_size; i++) {
+            if (lists[i] != nullptr) {
+                node_pool.push(lists[i]);
+            }
+        }
+        
+        // then always extract the node with min value
+        ListNode dummy(INT_MIN);
+        ListNode *pre = &dummy;
+        while (!node_pool.empty()) {
+            ListNode *cur = node_pool.top();
+            node_pool.pop();
+            pre->next = cur;
+            pre = pre->next;
+            if (cur->next != nullptr) {
+                node_pool.push(cur->next);
+            }
+        } 
+        
+        return dummy.next;
+    }
+};
+
+// Naive implementation
 class Solution {
     ListNode *mergeTwoLists(ListNode *l1, ListNode *l2) {
         if (l1 == nullptr) {
@@ -21,7 +67,7 @@ class Solution {
         ListNode *head2 = new ListNode(INT_MIN);
         head1->next = l1;
         head2->next = l2;
-        // ListNode *cur = head1;
+        
         ListNode *p1 = head1;
         ListNode *p2 = head2;
         
