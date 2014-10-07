@@ -12,6 +12,40 @@
  * Return 6.
  */
  
+// Simplified version
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+    int find_max(TreeNode *root, int &cur_max) {
+        if (root == nullptr) {
+            return 0;
+        }
+
+        int left_single = find_max(root->left, cur_max);
+        int right_single = find_max(root->right, cur_max);
+        int single = max(0, max(left_single, right_single)) + root->val;
+        int crossing = left_single + right_single + root->val;
+        cur_max = max(cur_max, max(single, crossing));
+        
+        return single;  // return max single path
+    }
+    
+public:
+    int maxPathSum(TreeNode *root) {
+        int cur_max = INT_MIN;
+        find_max(root, cur_max);
+        
+        return cur_max;
+    }
+};
+
 /*
  * This this a really tricky one:
  * The maximum path for each sub-tree can be either:
@@ -81,7 +115,7 @@ class Solution {
         
         return cur_ret;
     }
-	
+    
 public:
     int maxPathSum(TreeNode *root) {
         int maxlen = numeric_limits<int>::min();
