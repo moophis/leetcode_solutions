@@ -17,6 +17,7 @@
  *  ]
  */
  
+// dfs
 /**
  * Definition for binary tree
  * struct TreeNode {
@@ -26,6 +27,30 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+class Solution {
+    void dfs(TreeNode *root, vector<vector<int> > &ret, int level) {
+        if (root == nullptr) {
+            return;
+        }
+        if (level >= ret.size()) {
+            ret.push_back({root->val});
+        } else {
+            ret[level].push_back(root->val);
+        }
+        dfs(root->left, ret, level + 1);
+        dfs(root->right, ret, level + 1);
+    }
+    
+public:
+    vector<vector<int> > levelOrder(TreeNode *root) {
+        vector<vector<int> > ret;
+        dfs(root, ret, 0);
+        
+        return ret;
+    }
+};
+
+// bfs
 class Solution {
 public:
     vector<vector<int> > levelOrder(TreeNode *root) {
