@@ -14,6 +14,46 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
+ // Without using additional data structures
+class Solution {
+    TreeNode *do_build(vector<int> &inorder, int in_start, int in_end, vector<int> &postorder, int po_start, int po_end) {
+        if (in_end >= inorder.size() || po_end >= postorder.size() || in_start > in_end || po_start > po_end) {
+            return nullptr; 
+        }
+        if (in_start == in_end && po_start == po_start) {
+            return new TreeNode(inorder[in_start]);
+        }
+        
+        int rootval = postorder[po_end];
+        TreeNode *root = new TreeNode(rootval);
+        
+        // find root val in inorder vector
+        int idx = -1;
+        for (int i = in_start; i <= in_end; i++) {
+            if (inorder[i] == rootval) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx == -1) {
+            // error case: bad inorder array
+            return nullptr;
+        }
+        
+        int leftsize = idx - in_start;
+        root->left = do_build(inorder, in_start, idx - 1, postorder, po_start, po_start + leftsize - 1);
+        root->right = do_build(inorder, idx + 1, in_end, postorder, po_start + leftsize, po_end - 1);
+        
+        return root;
+    }
+    
+public:
+    TreeNode *buildTree(vector<int> &inorder, vector<int> &postorder) {
+        return do_build(inorder, 0, inorder.size() - 1, postorder, 0, postorder.size() - 1);
+    }
+};
+
+// Use a hashmap to buffer inorder index
 class Solution {
     unordered_map<int, int> in_index; // <val, index>
     TreeNode *do_build(vector<int> &inorder, int root_val, int in_start, int in_end,
