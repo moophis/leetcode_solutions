@@ -1,5 +1,45 @@
 // https://oj.leetcode.com/problems/count-and-say/
 
+// iteration
+class Solution {
+public:
+    string countAndSay(int n) {
+        if (n < 0) {
+            return "";
+        }
+        if (n == 1) {
+            return "1";
+        }
+        
+        string last = "1";
+        string cur = "";
+        for (int i = 2; i <= n; i++) {
+            string cur;
+            char last_c = last[0];
+            int cnt = 1; 
+            for (int j = 1; j < last.size(); j++) {
+                if (last[j] == last_c) {
+                    cnt++;
+                } else {
+                    cur += to_string(cnt);
+                    cur += last_c;
+                    
+                    cnt = 1;
+                    last_c = last[j];
+                }
+            }
+            
+            cur += to_string(cnt);
+            cur += last_c;
+            last.assign(cur);
+            cur = "";
+        }
+        
+        return last;
+    }
+};
+
+// recursion
 class Solution {
 public:
     string countAndSay(int n) {
