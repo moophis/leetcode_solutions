@@ -23,12 +23,6 @@
  *           6
  */
 
-/*
- * Recursively swap the left child and right child until reach 
- * the right bottom. Then go back while finding any left children, 
- * concatenate them to the right bottom, recursively flatten
- * them until no left child.
- */
 /**
  * Definition for binary tree
  * struct TreeNode {
@@ -37,6 +31,36 @@
  *     TreeNode *right;
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
+ */
+
+// cleaner recursive solution
+class Solution {
+public:
+    void flatten(TreeNode *root) {
+        if (root == nullptr) {
+            return;
+        }       
+        
+        flatten(root->left);
+        flatten(root->right);
+        TreeNode *right = root->right; 
+        if (root->left != nullptr) {
+            root->right = root->left;
+            root->left = nullptr;
+            TreeNode *cur = root->right;
+            while (cur->right != nullptr) {
+                cur = cur->right;
+            }
+            cur->right = right;
+        } 
+    }
+};
+
+/*
+ * Recursively swap the left child and right child until reach 
+ * the right bottom. Then go back while finding any left children, 
+ * concatenate them to the right bottom, recursively flatten
+ * them until no left child.
  */
 class Solution {
 public:
