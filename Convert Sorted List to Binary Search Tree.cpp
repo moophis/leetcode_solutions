@@ -1,7 +1,4 @@
-/**
- * Given a singly linked list where elements are sorted 
- * in ascending order, convert it to a height balanced BST.
- */
+// https://oj.leetcode.com/problems/convert-sorted-list-to-binary-search-tree/
 
 /**
  * Definition for singly-linked list.
@@ -21,37 +18,29 @@
  * };
  */
 class Solution {
+    TreeNode *do_convert(ListNode *head, ListNode *tail) {
+        if (head == tail) {
+            return nullptr;
+        }
+        
+        ListNode *slow = head, *fast = head;
+        while (fast != tail && fast->next != tail) {
+            fast = fast->next->next;
+            slow = slow->next;
+        }
+        TreeNode *tn = new TreeNode(slow->val);
+        tn->left = do_convert(head, slow);
+        tn->right = do_convert(slow->next, tail);
+        
+        return tn;
+    }
+
 public:
     TreeNode *sortedListToBST(ListNode *head) {
-        // IMPORTANT: Please reset any member data you declared, as
-        // the same Solution instance will be reused for each test case.
         if (head == nullptr) {
             return nullptr;
         }
         
-        return do_sl2b(head, nullptr);
-    }
-    
-    TreeNode *do_sl2b(ListNode *head, ListNode *tail) {
-        ListNode *slow, *fast;
-        
-        slow = fast = head;
-        
-        if (slow == tail) {  // base case
-            return nullptr;
-        }
-        if (slow->next == nullptr) {  // base case
-            return new struct TreeNode(slow->val);
-        }
-        
-        while (fast != tail && fast->next != tail) {  // find middle point
-            slow = slow->next;
-            fast = fast->next->next;
-        }
-
-        TreeNode *ret = new struct TreeNode(slow->val);
-        ret->left = do_sl2b(head, slow);
-        ret->right = do_sl2b(slow->next, tail);
-        return ret;
+        return do_convert(head, nullptr);    
     }
 };
