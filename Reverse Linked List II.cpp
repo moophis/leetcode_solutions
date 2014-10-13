@@ -8,6 +8,54 @@
  *     ListNode(int x) : val(x), next(NULL) {}
  * };
  */
+
+// One pass, cleaner code
+class Solution {
+    void reverse(ListNode *dummy, ListNode* &end, ListNode *head, int cur_cnt, const int n) {
+        if (head == nullptr) {
+            return;
+        }
+        if (cur_cnt == n) {
+            end = head->next;
+            dummy->next = head;
+            return;
+        }
+        
+        ListNode *t = head->next;
+        reverse(dummy, end, head->next, cur_cnt + 1, n);
+        t->next = head;
+    }
+    
+public:
+    ListNode *reverseBetween(ListNode *head, int m, int n) {
+        if (head == nullptr) {
+            return nullptr;
+        }
+        if (m <= 0 || n < m) {
+            return nullptr;
+        }
+        
+        ListNode dummy(INT_MIN);
+        dummy.next = head;
+        int cnt = 0;
+        ListNode *cur = &dummy;
+        while (cur != nullptr && cnt < m - 1) {
+            cur = cur->next;
+            cnt++;
+        }
+        if (cur == nullptr) {
+            return nullptr;  // error: m is too large
+        }
+        
+        ListNode *t = cur->next;
+        ListNode *end = nullptr;
+        reverse(cur, end, t, m, n);
+        t->next = end;
+        
+        return dummy.next;
+    }
+};
+
 class Solution {
     ListNode *__reverse(ListNode* current, ListNode* &begin, ListNode* &end,
                         int cur_index, const int FROM, const int TO) {
