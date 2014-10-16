@@ -1,5 +1,35 @@
 // https://oj.leetcode.com/problems/remove-duplicates-from-sorted-array-ii/
 
+// Better solution
+class Solution {
+public:
+    int removeDuplicates(int A[], int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int pre = 1, cur = 1;
+        int occur = 1;
+        
+        while (cur < n) {
+            if (A[cur-1] == A[cur]) {
+                if (occur == 1) {
+                    occur++;
+                } else if (occur >= 2) {
+                    cur++;
+                    continue;
+                }
+            } else {
+                occur = 1;
+            }
+            
+            A[pre++] = A[cur++];
+        }
+        
+        return pre;
+    }
+};
+
+// Just acceptable solution
 class Solution {
 public:
     int removeDuplicates(int A[], int n) {
