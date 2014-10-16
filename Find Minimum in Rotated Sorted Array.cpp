@@ -1,5 +1,32 @@
 // https://oj.leetcode.com/problems/find-minimum-in-rotated-sorted-array/
 
+// simpler solution
+class Solution {
+public:
+    int findMin(vector<int> &num) {
+        int size = num.size();
+        if (size == 0) {
+            return 0;
+        }
+        
+        int start = 0, end = size - 1;
+        if (num[start] <= num[end]) {
+            return num[start];
+        }
+        while (end - start > 1) {
+            int mid = start + (end - start) / 2;
+            if (num[start] < num[mid]) {
+                start = mid;
+            } else {
+                end = mid;
+            }
+        }
+        
+        return num[end];
+    }
+};
+
+// By finding the large skew
 class Solution {
 public:
     int findMin(vector<int> &num) {
