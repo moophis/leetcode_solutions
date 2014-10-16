@@ -9,6 +9,41 @@
  *     Interval(int s, int e) : start(s), end(e) {}
  * };
  */
+
+// O(nlogn) solution
+class Solution {
+public:
+    struct IntervalCompare {
+        inline bool operator()(const Interval &lhs, const Interval &rhs) {
+            return (lhs.start < rhs.start);
+        }
+    };
+
+    vector<Interval> merge(vector<Interval> &intervals) {
+        vector<Interval> ret;
+        if (intervals.size() == 0) {
+            return ret; 
+        }
+        
+        sort(intervals.begin(), intervals.end(), IntervalCompare());
+        
+        Interval cur = intervals[0];
+        for (auto it = intervals.begin(); it != intervals.end(); ++it) {
+            if (cur.end < it->start) {
+                ret.push_back(cur);
+                cur = *it;
+            } else {
+                cur.start = min(cur.start, it->start);
+                cur.end = max(cur.end, it->end);
+            }
+        }
+        ret.push_back(cur);
+        
+        return ret;
+    }
+};
+
+// Naive O(n^2) solution
 class Solution {
     // see: https://oj.leetcode.com/problems/insert-interval/
     vector<Interval> insert(vector<Interval> &intervals, Interval newInterval) {
