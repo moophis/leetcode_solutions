@@ -1,5 +1,55 @@
 // https://oj.leetcode.com/problems/search-for-a-range/
 
+// cleaner solution
+class Solution {
+public:
+    vector<int> searchRange(int A[], int n, int target) {
+        vector<int> ret = {-1, -1};
+        if (n == 0 || target < A[0] || target > A[n-1]) {
+            return ret;
+        }
+        
+        int beg = 0, end = n - 1;
+        
+        // find lower bound
+        while (beg < end) {
+            int mid = beg + (end - beg) / 2;  // try to move backward
+            if (A[mid] > target) {
+                end = mid - 1;
+            } else if (A[mid] < target) {
+                beg = mid + 1;
+            } else {
+                end = mid;
+            }
+        }
+        ret[0] = end;
+        if (A[ret[0]] != target) {
+            return {-1, -1};
+        }
+        
+        // find upper bound
+        beg = 0;
+        end = n - 1;
+        while (beg < end) {
+            int mid = beg + (end - beg + 1) / 2;  // try to move forward
+            if (A[mid] > target) {
+                end = mid - 1;
+            } else if (A[mid] < target) {
+                beg = mid + 1;
+            } else {
+                beg = mid;
+            }
+        }
+        ret[1] = beg;
+        if (A[ret[1]] != target) {
+            return {-1, -1};
+        }
+        
+        return ret;
+    }
+};
+
+
 // O(logn): use binary search three times
 class Solution {
     int find_upper(int A[], int from, int to, int target) {
