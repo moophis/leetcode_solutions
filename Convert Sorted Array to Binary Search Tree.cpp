@@ -10,32 +10,21 @@
  * };
  */
 class Solution {
-    // [low, hi]
-    void convert(vector<int> &num, int low, int hi, TreeNode* &root) {
-        if (low < 0 || hi >= num.size() || low > hi) 
-            return; 
+    TreeNode *convert(vector<int> &num, int start, int end) {
+        if (start > end) {
+            return nullptr;
+        }    
         
-        int mid = low + (hi - low) / 2;
+        int mid = start + (end - start) / 2;
+        TreeNode *cur = new TreeNode(num[mid]);
+        cur->left = convert(num, start, mid - 1);
+        cur->right = convert(num, mid + 1, end);
         
-        if (root == nullptr) {
-            root = new TreeNode(num[mid]);
-        } else {
-            root->val = num[mid];
-        }
-        
-        convert(num, low, mid - 1, root->left);
-        convert(num, mid + 1, hi, root->right);
+        return cur;
     }
     
 public:
     TreeNode *sortedArrayToBST(vector<int> &num) {
-        if (num.size() == 0) {
-            return nullptr;
-        }
-        
-        TreeNode *root = nullptr;
-        
-        convert(num, 0, num.size() - 1, root);
-        return root;
+        return convert(num, 0, num.size() - 1);
     }
 };
