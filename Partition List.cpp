@@ -8,6 +8,36 @@
  *     ListNode(int x) : val(x), next(NULL) {}
  * };
  */
+// Do not need to swap nodes in place. Use two lists instead.
+class Solution {
+public:
+    ListNode *partition(ListNode *head, int x) {
+        if (head == nullptr) {
+            return nullptr;
+        }
+        
+        ListNode dummy(INT_MIN);
+        ListNode smaller(INT_MIN);
+        dummy.next = head;
+        ListNode *cur = &dummy;
+        ListNode *scur = &smaller;
+        while (cur->next != nullptr) {
+            if (cur->next->val < x) {
+                ListNode *t = cur->next;
+                cur->next = t->next;
+                t->next = scur->next;
+                scur->next = t;
+                scur = scur->next;
+            } else {
+                cur = cur->next;
+            }
+        }
+        scur->next = dummy.next;
+        
+        return smaller.next;
+    }
+};
+
 class Solution {
 public:
     ListNode *partition(ListNode *head, int x) {
