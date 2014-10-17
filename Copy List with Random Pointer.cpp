@@ -8,7 +8,54 @@
  *     RandomListNode(int x) : label(x), next(NULL), random(NULL) {}
  * };
  */
-// iterative
+// iterative without using additional data structure
+// 1. Append new nodes behind their original ones.
+// 2. Split two lists.
+class Solution {
+public:
+    RandomListNode *copyRandomList(RandomListNode *head) {
+        if (head == nullptr) {
+            return nullptr;
+        }
+        
+        RandomListNode dummy(INT_MIN);
+        RandomListNode *cur = head;
+       
+        // create new nodes and assemble next pointers
+        while (cur != nullptr) {
+            RandomListNode *nxt = cur->next;
+            cur->next = new RandomListNode(cur->label);
+            cur->next->next = nxt;
+            cur = nxt;
+        }
+        dummy.next = head->next;
+        
+        // assemble random pointers
+        cur = head;
+        while (cur != nullptr) {
+            if (cur->random != nullptr) {
+                RandomListNode *rand = cur->random;
+                cur->next->random = rand->next;
+            }
+            cur = cur->next->next;
+        }
+        
+        // split two lists
+        cur = head;
+        while (cur != nullptr) {
+            RandomListNode *node = cur->next;
+            cur->next = node->next;
+            cur = cur->next;
+            if (cur != nullptr) {
+                node->next = cur->next;
+            } 
+        }
+        
+        return dummy.next;
+    }
+};
+
+// iterative with hash map
 class Solution {
 public:
     RandomListNode *generate(unordered_map<RandomListNode *, RandomListNode *> &copied, RandomListNode *old) {
@@ -46,7 +93,7 @@ public:
     }
 };
 
-// recursion
+// recursion with hash map
 class Solution {
     unordered_map<int, RandomListNode *> copied;
     
