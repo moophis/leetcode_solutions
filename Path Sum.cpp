@@ -25,38 +25,20 @@
  * };
  */
 class Solution {
-    bool find_path(TreeNode *root, int sum, int cur) {
-        if (root->left == nullptr && root->right == nullptr) {
-            return sum == cur + root->val;
-        }
-        
-        bool left_match = false;
-        bool right_match = false;
-        
-        if (root->left != nullptr) {
-            left_match = find_path(root->left, sum, cur + root->val);
-            if (left_match) {
-                return true;
-            }
-        }
-        if (root->right != nullptr) {
-            right_match = find_path(root->right, sum, cur + root->val);
-            if (right_match) {
-                return true;
-            }
-        }  
-        
-        return false;
-    }
-public:
-    bool hasPathSum(TreeNode *root, int sum) {
-        // IMPORTANT: Please reset any member data you declared, as
-        // the same Solution instance will be reused for each test case.
+    bool find_sum(TreeNode *root, const int sum, int cur) {
         if (root == nullptr) {
             return false;
         }
         
-        int cur = 0;
-        return find_path(root, sum, cur);
+        cur += root->val;
+        if (root->left == nullptr && root->right == nullptr) {
+            return (sum == cur);
+        }
+        return find_sum(root->left, sum, cur) || find_sum(root->right, sum, cur);
+    }
+    
+public:
+    bool hasPathSum(TreeNode *root, int sum) {
+        return find_sum(root, sum, 0);
     }
 };
