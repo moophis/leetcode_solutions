@@ -8,38 +8,32 @@
  */
 
 class Solution {
-public:
-    vector<vector<int> > permute(vector<int> &num) {
-        // IMPORTANT: Please reset any member data you declared, as
-        // the same Solution instance will be reused for each test case.
-        vector<vector<int> > ret;
-        
-        if (num.size() == 0)
-            return ret;
-        
-        do_permute(ret, num);
-        return ret;
-    }
-    
-    void do_permute(vector<vector<int> > &ret, vector<int> &num) {
-        static vector<int> buf;
-        int n = num.size();
-        
-        if (n == 0) {    // base case
-            ret.push_back(buf);
+    void do_permute(vector<int> &num, vector<vector<int> > &ret, vector<int> &line, int n) {
+        if (n == 0) {
+            ret.push_back(line);
             return;
         }
+        
         for (int i = 0; i < n; i++) {
-            int t = num[i];
-            
-            buf.push_back(t);
-            swap(num[i], num[n - 1]);
-            num.pop_back();   
-            do_permute(ret, num);
-            num.push_back(t);
-            swap(num[i], num[n - 1]);
-            buf.pop_back();
+            line.push_back(num[i]);
+            swap(num[i], num[n-1]);
+            do_permute(num, ret, line, n - 1);
+            swap(num[i], num[n-1]);
+            line.pop_back();
+        }
+    }
+
+public:
+    vector<vector<int> > permute(vector<int> &num) {
+        vector<vector<int> > ret;
+        int size = num.size();
+        if (size == 0) {
+            return ret;
         }
         
+        vector<int> line;
+        do_permute(num, ret, line, size);
+        
+        return ret;
     }
 };
