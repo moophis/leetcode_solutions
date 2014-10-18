@@ -9,21 +9,59 @@
  * };
  */
 class Solution {
-    void do_reorder(ListNode *&current, ListNode *appended) {
-        if (appended == nullptr || appended->next == nullptr
-                                || appended == current) {
+    // iterative: first split list into half, reverse the second one, and then merge those two
+    void reorder_iterative(ListNode *head, ListNode *append) {
+        if (append->next == nullptr || append == head) {
+            return;
+        }
+        ListNode dummy(INT_MIN);
+        dummy.next = append->next;
+        append->next = nullptr;
+        
+        // reverse the second half list
+        ListNode *pre = nullptr;
+        ListNode *cur = dummy.next;
+        ListNode *next;
+        ListNode *newhead;
+        while (cur != nullptr) {
+            next = cur->next;
+            cur->next = pre;
+            if (next == nullptr) {
+                newhead = cur;
+            } else {
+                pre = cur;
+            }
+            cur = next;
+        }
+        dummy.next = newhead;
+    
+        // interleave two lists
+        cur = head;
+        while (cur != nullptr && dummy.next != nullptr) {
+            ListNode *t = cur->next;
+            ListNode *p = dummy.next;
+            cur->next = dummy.next;
+            dummy.next = p->next;
+            p->next = t;
+            cur = t;
+        }
+    }
+    
+    // recursive
+    void reorder(ListNode* &current, ListNode* append) {
+        if (append->next == nullptr || append->next == current) {
             return;
         }
         
-        do_reorder(current, appended->next);
+        reorder(current, append->next);
         
-        ListNode *moved = appended->next;
-        appended->next = moved->next; // nullptr
+        ListNode *moved = append->next;
+        append->next = moved->next;
         moved->next = current->next;
         current->next = moved;
-        
         current = moved->next;
     }
+    
 public:
     void reorderList(ListNode *head) {
         if (head == nullptr || head->next == nullptr) {
@@ -40,6 +78,7 @@ public:
             }
         }
         
-        do_reorder(head, slow);
+        // reorder_iterative(head, slow);
+        reorder_iterative(head, slow);
     }
 };
