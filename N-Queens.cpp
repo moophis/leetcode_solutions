@@ -26,62 +26,52 @@
  */
  
 class Solution {
-    vector<string> strbuf;
-    int N;
-    vector<int> pos;   // pos[row] = col
+    vector<string> generate(vector<int> &placement) {
+        int N = placement.size();
+        vector<string> ret;
+        for (int i = 0; i < N; i++) {
+            string s;
+            for (int j = 0; j < N; j++) {
+                s += (placement[i] == j) ? 'Q' : '.'; 
+            }
+            ret.push_back(s);
+        }
+        return ret;
+    }
     
-    bool is_ok(int row, int col) {
+    bool valid(vector<int> &placement, int row, int col) {
         for (int i = 0; i < row; i++) {
-            if (pos[i] == col                // same colunm
-               || row - i == col - pos[i]   // same diagonal 
-               || row - i == pos[i] - col) { // same diagonal
+            int j = placement[i];
+            if (j == col || i - row == j - col || i - row == col - j) {
                 return false;
             }
         }
-        
         return true;
     }
     
-    string place_q_at(int col) {
-        string s = "";
-        
-        for (int i = 0; i < N; i++) {
-            s += (col == i) ? "Q" : ".";
-        }
-        
-        return s;
-    }
-    
-    void update_col(int row, int col) {
-        pos[row] = col;
-    }
-    
-    void do_solve(vector<vector<string> > &ret, int k) {
-        if (k == N) {
-            vector<string> strbuf;
-            
-            for (int i = 0; i < N; i++) {
-                strbuf.push_back(place_q_at(pos[i]));
-            }
-            ret.push_back(strbuf);
+    void solve(vector<vector<string> > &ret, vector<int> &placement, int cur_row, const int N) {
+        if (cur_row == N) {
+            ret.push_back(generate(placement));
             return;
         }
         
-        for (int i = 0; i < N; i++) {  // for each column
-            if (is_ok(k, i)) {
-                update_col(k, i);      // (row, col)
-                do_solve(ret, k + 1);  // place (k+1)th queen
+        for (int col = 0; col < N; col++) {
+            if (valid(placement, cur_row, col)) {
+                placement[cur_row] = col;
+                solve(ret, placement, cur_row + 1, N);
             }
         }
     }
+    
 public:
     vector<vector<string> > solveNQueens(int n) {
         vector<vector<string> > ret;
+        if (n <= 0) {
+            return ret;
+        }
         
-        N = n;
-        pos.resize(N);
-        do_solve(ret, 0); // try to solve the 0-th queen
-        
+        vector<int> placement(n);
+        solve(ret, placement, 0, n);
         return ret;
     }
 };
