@@ -54,32 +54,32 @@ public:
 class Solution {
 public:
     vector<vector<int> > levelOrder(TreeNode *root) {
-        list<TreeNode *> cur, next;
         vector<vector<int> > ret;
-        vector<int> vec;
-        
         if (root == nullptr) {
             return ret;
         }
         
-        cur.push_back(root);
-        while (!cur.empty()) {
-            TreeNode *t = cur.front();
-            cur.pop_front();
-            vec.push_back(t->val);
+        queue<TreeNode *> q1, q2;
+        queue<TreeNode *> &cur_q = q1, &next_q = q2;
+        vector<int> line;
+        
+        cur_q.push(root);
+        while (!cur_q.empty()) {
+            TreeNode *node = cur_q.front();
+            cur_q.pop();
+            line.push_back(node->val);
             
-            if (t->left != nullptr) {
-                next.push_back(t->left);
+            if (node->left != nullptr) {
+                next_q.push(node->left);
             }
-            if (t->right != nullptr) {
-                next.push_back(t->right);
+            if (node->right != nullptr) {
+                next_q.push(node->right);
             }
             
-            if (cur.empty()) {
-                cur = next;
-                next.clear();
-                ret.push_back(vec);
-                vec.clear();
+            if (cur_q.empty()) {
+                ret.push_back(line);
+                line.clear();
+                swap(cur_q, next_q);
             }
         }
         
