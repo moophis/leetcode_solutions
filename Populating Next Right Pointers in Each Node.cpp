@@ -1,3 +1,4 @@
+
 /**
  * Definition for binary tree with next pointer.
  * struct TreeLinkNode {
@@ -6,6 +7,56 @@
  *  TreeLinkNode(int x) : val(x), left(NULL), right(NULL), next(NULL) {}
  * };
  */
+// Optimal solution: iterative with constant space complexity.
+// Use two pointers to traverse and connect node level by level.
+class Solution {
+public:
+    void connect(TreeLinkNode *root) {
+        if (root == nullptr) {
+            return;
+        }
+        
+        TreeLinkNode *high = root;
+        TreeLinkNode *low = root->left;
+        while (low != nullptr) {
+            TreeLinkNode *cur = low;
+            while (high != nullptr) {
+                if (cur != high->left) {
+                    cur->next = high->left;
+                    cur = cur->next;
+                }
+                cur->next = high->right;
+                cur = cur->next;
+                high = high->next;
+            }
+            
+            high = low;
+            low = high->left;
+        }
+    }
+};
+
+// Recursion: no explicit additional space.
+class Solution {
+public:
+    void connect(TreeLinkNode *root) {
+        if (root == nullptr) {
+            return;
+        }
+        
+        if (root->left != nullptr) {
+            root->left->next = root->right;
+        }
+        if (root->right != nullptr && root->next != nullptr) {
+            root->right->next = root->next->left;
+        }
+        
+        connect(root->right);
+        connect(root->left);
+    }
+};
+
+// Use extra space
 class Solution {
 public:
     void connect(TreeLinkNode *root) {
