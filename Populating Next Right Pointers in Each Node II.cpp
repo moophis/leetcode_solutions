@@ -8,6 +8,48 @@
  *  TreeLinkNode(int x) : val(x), left(NULL), right(NULL), next(NULL) {}
  * };
  */
+
+// Iterative solution: use O(1) space
+class Solution {
+public:
+    void connect(TreeLinkNode *root) {
+        if (root == nullptr) {
+            return;
+        }
+        
+        TreeLinkNode *cur = root;      // node in the current level
+        TreeLinkNode *head = nullptr;  // the first node in the next level
+        TreeLinkNode *prev = nullptr;  // the node by which the current processed node is pointed
+        
+        while (cur != nullptr) {
+            while (cur != nullptr) {
+                if (cur->left != nullptr) {
+                    if (prev != nullptr) {
+                        prev->next = cur->left;
+                    } else {
+                        head = cur->left;
+                    }
+                    prev = cur->left;
+                }
+                if (cur->right != nullptr) {
+                    if (prev != nullptr) {
+                        prev->next = cur->right;
+                    } else {
+                        head = cur->right;
+                    }
+                    prev = cur->right;
+                }
+                cur = cur->next;
+            }
+            
+            cur = head;
+            head = nullptr;
+            prev = nullptr;
+        }
+    }
+};
+
+// Recursion: still use O(n) extra space
 class Solution {
 public:
     void connect(TreeLinkNode *root) {
