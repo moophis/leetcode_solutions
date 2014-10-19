@@ -33,7 +33,41 @@
  * };
  */
 
-// cleaner recursive solution
+// O(n): cache the last node of each sub-list
+class Solution {
+    TreeNode *do_flatten(TreeNode *root) {
+        if (root == nullptr) {
+            return nullptr;
+        }
+        
+        TreeNode *left_end = do_flatten(root->left);
+        TreeNode *right_end = do_flatten(root->right);
+        if (left_end != nullptr) {
+            TreeNode *t = root->right;
+            root->right = root->left;
+            root->left = nullptr;
+            left_end->right = t;
+        }
+        if (right_end != nullptr) {
+            return right_end;
+        } else if (left_end != nullptr) {
+            return left_end;
+        } else {
+            return root;
+        }
+    }
+    
+public:
+    void flatten(TreeNode *root) {
+        if (root == nullptr) {
+            return;
+        }
+        
+        do_flatten(root);
+    }
+};
+
+// O(nlogn): cleaner recursive solution
 class Solution {
 public:
     void flatten(TreeNode *root) {
