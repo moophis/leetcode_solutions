@@ -1,5 +1,37 @@
 // https://oj.leetcode.com/problems/subsets/
 
+// Bit manipulation
+class Solution {
+public:
+    vector<vector<int> > subsets(vector<int> &S) {
+        int size = static_cast<int>(S.size());
+        vector<vector<int> > ret;
+        vector<int> tmp;
+        if (size <= 0 || size > 32) {
+            return ret;
+        }
+        
+        int bit = 0;  // assume size of set will not exceed 32
+        int MAX_MASK = (1 << size);
+        while ((bit & MAX_MASK) == 0) {
+            for (int i = size - 1; i >= 0; i--) {
+                if (bit & (1 << i)) {
+                    tmp.push_back(S[i]);
+                }
+            }
+            sort(tmp.begin(), tmp.end());
+            ret.push_back(tmp);
+            tmp.clear();
+            
+            bit++;
+        }
+        
+        return ret;
+    }
+};
+
+
+// Recursion
 class Solution {
     void subsets_of(int n, vector<int> &S, int start, const int size,
                     vector<vector<int> > &result, vector<int> &one_result) {
