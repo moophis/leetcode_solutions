@@ -1,5 +1,58 @@
 // https://oj.leetcode.com/problems/search-for-a-range/
 
+// even cleaner solution
+class Solution {
+    int search_left(int A[], int n, int target) {
+        int s = 0, e = n - 1;
+        while (s <= e) {
+            int m = s + (e - s) / 2;
+            if (A[m] == target) {
+                if (m == s || A[m-1] != target) {
+                    return m;
+                } else {
+                    e = m - 1;
+                }
+            } else if (A[m] > target) {
+                e = m - 1;
+            } else {
+                s = m + 1;
+            }
+        }
+        return -1;
+    }
+    
+    int search_right(int A[], int n, int target) {
+        int s = 0, e = n - 1;
+        while (s <= e) {
+            int m = s + (e - s) / 2;
+            if (A[m] == target) {
+                if (m == e || A[m+1] != target) {
+                    return m;
+                } else {
+                    s = m + 1;
+                }
+            } else if (A[m] > target) {
+                e = m - 1;
+            } else {
+                s = m + 1;
+            }
+        }
+        return -1;
+    }
+    
+public:
+    vector<int> searchRange(int A[], int n, int target) {
+        if (n <= 0) {
+            return {-1, -1};
+        }
+        vector<int> ret(2);
+        ret[0] = search_left(A, n, target);
+        ret[1] = search_right(A, n, target);
+        return ret;
+    }
+};
+
+
 // cleaner solution
 class Solution {
 public:
