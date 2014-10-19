@@ -30,6 +30,30 @@ public:
     }
 };
 
+// Iteration
+// http://www.cnblogs.com/TenosDoIt/p/3451902.html
+class Solution {
+public:
+    vector<vector<int> > subsets(vector<int> &S) {
+        int size = static_cast<int>(S.size());
+        vector<vector<int> > ret;
+        
+        sort(S.begin(), S.end());
+        
+        ret.push_back({});  
+        for (int i = 0; i < size; i++) {
+             int retsize = ret.size();
+             for (int j = 0; j < retsize; j++) {
+                 vector<int> t = ret[j];
+                 t.push_back(S[i]);
+                 ret.push_back(t);
+             }
+        }
+        
+        return ret;
+    }
+};
+
 
 // Recursion
 class Solution {
