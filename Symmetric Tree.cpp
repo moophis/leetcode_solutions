@@ -1,3 +1,5 @@
+// https://oj.leetcode.com/problems/symmetric-tree/
+
 /**
  * Definition for binary tree
  * struct TreeNode {
@@ -7,74 +9,73 @@
  *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
  * };
  */
-// Recursive way
+// iterative
 class Solution {
 public:
     bool isSymmetric(TreeNode *root) {
-        // Note: The Solution object is instantiated only once and is reused by each test case.
-        if (root == nullptr)
+        if (root == nullptr) {
             return true;
-        
-        return compare(root->left, root->right);
-    }
-    
-    bool compare(TreeNode *l, TreeNode *r) {
-        bool valcomp = false;
-        
-        if ((l == nullptr && r != nullptr)
-             || (l != nullptr && r == nullptr)) {
-            return false;     
-        } else if (l == nullptr && r == nullptr) {
-            return true;
-        } else {
-            valcomp = (l->val == r->val);
-            return valcomp && compare(l->left, r->right)
-                           && compare(l->right, r->left);
         }
-    }
-};
+        
+        vector<TreeNode *> v1 = {root->left, root->right}, v2;
+        vector<TreeNode *> &cur_level = v1, &next_level = v2;
 
-// Iterative way
-// refer to http://fisherlei.blogspot.com/2013/01/leetcode-symmetric-tree.html
-class Solution {
-public:
-    bool isSymmetric(TreeNode *root) {
-        // Note: The Solution object is instantiated only once and is reused by each test case.
-        TreeNode *cur;
-        vector<TreeNode *> pre_level, cur_level;
-        
-        if (root == nullptr)
-            return true;
-        
-        pre_level.push_back(root);
-        while (pre_level.size() > 0) {
-            while (pre_level.size() > 0) {
-                cur = pre_level.back();
-                pre_level.pop_back();
-                if (cur == nullptr)
-                    continue;
-                cur_level.push_back(cur->left);
-                cur_level.push_back(cur->right);
-            }
-            
-            int begin = 0, end = static_cast<int>(cur_level.size()) - 1;
-            if ((end + 1) % 2) {
+        // start from the second level
+        while (!cur_level.empty()) {
+            int size = cur_level.size();
+            if (size % 2) {
                 return false;
             }
-            while (begin < end) {
-                int lval = cur_level[begin] ? cur_level[begin]->val : -1;
-                int rval = cur_level[end] ? cur_level[end]->val : -1;
-                if (lval != rval) {
+            
+            // validate current level
+            for (int s = 0, e = size - 1; s < e; s++, e--) {
+                if ((cur_level[s] != nullptr) ^ (cur_level[e] != nullptr)) {
                     return false;
                 }
-                begin++;
-                end--;
+                if (cur_level[s] != nullptr && cur_level[e] != nullptr) {
+                    if (cur_level[s]->val != cur_level[e]->val) {
+                        return false;
+                    } 
+                }
             }
-            pre_level.clear();
-            pre_level.insert(pre_level.begin(), cur_level.begin(), cur_level.end());
+            
+            // assemble next level
+            for (int i = 0; i < size; i++) {
+                if (cur_level[i] != nullptr) {
+                    next_level.push_back(cur_level[i]->left);
+                    next_level.push_back(cur_level[i]->right);
+                }
+            }
+            
             cur_level.clear();
+            swap(cur_level, next_level);
         }
         
         return true;
+    }
+};
+
+// recursive
+class Solution {
+    bool compare(TreeNode *left, TreeNode *right) {
+        if (left == nullptr && right == nullptr) {
+            return true;
+        }
+        if ((left != nullptr) ^ (right != nullptr)) {
+            return false;
+        }
+        if (left->val != right->val) {
+            return false;
+        }
+        
+        return compare(left->right, right->left) && compare(left->left, right->right);
+    }
+    
+public:
+    bool isSymmetric(TreeNode *root) {
+        if (root == nullptr) {
+            return true;
+        }
+        return compare(root->left, root->right);
     }
 };
