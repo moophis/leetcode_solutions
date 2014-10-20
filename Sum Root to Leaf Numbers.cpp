@@ -10,35 +10,32 @@
  * };
  */
 class Solution {
-    void iterate_num(TreeNode *root, vector<int> &numbers, int current) {
-        int new_current = current * 10 + root->val;
-        
-        if (root->left == nullptr && root->right == nullptr) {
-            numbers.push_back(new_current);
+    void do_sum(TreeNode *root, int cur, int &sum) {
+        if (root == nullptr) {
             return;
-        }    
+        }
         
+        cur = cur * 10 + root->val;
+        if (root->left == nullptr && root->right == nullptr) {
+            sum += cur;
+            return;
+        }
         if (root->left != nullptr) {
-            iterate_num(root->left, numbers, new_current);
+            do_sum(root->left, cur, sum);
         }
         if (root->right != nullptr) {
-            iterate_num(root->right, numbers, new_current);
+            do_sum(root->right, cur, sum);
         }
     }
     
 public:
     int sumNumbers(TreeNode *root) {
-        if (root == nullptr)
+        if (root == nullptr) {
             return 0;
-        
-        vector<int> numbers;
-        int sum = 0;
-        iterate_num(root, numbers, 0);
-        
-        for (int i = 0; i < numbers.size(); i++) {
-            sum += numbers[i];
         }
         
+        int sum = 0;
+        do_sum(root, 0, sum);
         return sum;
     }
 };
